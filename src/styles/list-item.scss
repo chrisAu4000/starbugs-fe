@@ -1,0 +1,57 @@
+.list-item {
+  position: relative;
+  height: 70px;
+  width: 400px;
+  background: #b3b3b3;
+  transition: border-radius 0.5s;
+
+  .list-item-input {
+    width: 64%;
+    height: 25px;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    margin: auto;
+
+    text-align: center;
+    font-size: 20px;
+
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    transition: background 0.3s, border-bottom 0.5s;
+  }
+
+  .list-item-input:hover {
+    border-radius: 5px;
+    background: #cccccc;
+  }
+
+  .delete-item {
+    float: right;
+    transition: background 0.3s, border-radius 0.5s;
+    font-size: 100%;
+  }
+
+  .delete-item:hover {
+    background: #999999;
+    border-radius: 50%;
+  }
+
+  .delete-item:target {
+    background: transparent;
+  }
+  
+  .save-item {
+    width: 50px;
+    height: 50px;
+    transition: background 0.3s, color 0.3s, border-radius 0.5s;
+    font-size: 40px;
+    margin: 10px;
+  }
+
+  .save-item:hover {
+    background: #999999;
+    border-radius: 10px;
+  }
+}
