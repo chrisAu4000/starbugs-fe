@@ -12,14 +12,15 @@ const Router = (sources, props) => {
     .skipRepeatsWith(equalPath)
     .map(({path, value}) => {
     return value({
-      ...sources
-    , router: sources.router.path(path)
+      ...sources,
+      router: sources.router.path(path)
     })
   })
   .multicast()
   return {
-    DOM: page$.chain(c => c.DOM)
-  , router: page$.chain(c => c.router || empty())
+    DOM: page$.chain(c => c.DOM),
+    HTTP: page$.chain(c => c.HTTP || empty()),
+    router: page$.chain(c => c.router || empty())
   }
 }
 
