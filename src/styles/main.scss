@@ -1,35 +1,17 @@
+@import 'list';
 @import 'list-item';
+@import 'navigation';
 
-.list {
-  background: #F5F5F5;
-  padding: 20px;
-  position: relative;
-  .list-buttons {
-    position: absolute;
-    left: 5px;
-    top: -10px;
-    .add-list-item {
-      // width: 40px;
-      // height: 40px;
-      font-size: 40px;
-    }
-  }
-  .list-ul {
-    width: 400px;
-    list-style: none;
-    padding: 0;
-    margin: 0 auto;
 
-    .list-item-li {
-      margin: 10px 0;
-      -webkit-box-shadow: 0px 3px 10px -3px rgba(0,0,0,0.75);
-      -moz-box-shadow: 0px 3px 10px -3px rgba(0,0,0,0.75);
-      box-shadow: 0px 3px 10px -3px rgba(0,0,0,0.75);
-    }
-  }
-}
 button {
   background: transparent;
   border: none;
   outline: none;
+}
+body {
+  margin: 0;
+  font-family: TrajanPro-Regular, 'Helvetica', sans-serif;
+}
+.page {
+  margin: 8px;
 }

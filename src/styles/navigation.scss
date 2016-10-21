@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css?family=Bungee+Inline');
+// MOBILE
+@media screen and (max-width: 768px) {
+
+}
+// TABLET
+@media screen and (min-width: 769px) and (max-width: 960px) {
+
+}
+// DESKTOP
+@media screen and (min-width: 961px) {
+  .navigation {
+    top: 0;
+    left: 0;
+    nav {
+      background: black;
+      ul.navigation-list {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        li.navigation-list-item {
+          list-style: none;
+          float: left;
+          padding: 20px 16px 16px 16px;
+          transition: background 0.3s;
+          a.navigation-list-item-link {
+            color: #E3E35B;
+          }
+        }
+        li.navigation-list-item:hover {
+          cursor: pointer;
+          background: #424222;
+        }
+
+        li.navigation-list-item:first-of-type {
+          background: #E3E35B;
+          padding: 16px 16px;
+          a.navigation-list-item-link:first-of-type {
+            font-family: 'Bungee Inline', cursive;
+            color: black;
+            font-size: 120%;
+          }
+        }
+        li.navigation-list-item:first-of-type:hover {
+          cursor: pointer;
+          background: #F2F24E;
+        }
+      }
+    }
+  }
+}
