@@ -19,7 +19,8 @@
     "watch:scss": "chokidar src/styles/*.scss -c 'npm run build:css'",
     "test": "zuul --local 8080 test/test.js",
     "lint": "eslint src test --fix",
-    "start": "npm-run-all clean build:css --parallel watch:scss budo"
+    "assets": "ncp src/styles/assets build/assets",
+    "start": "npm-run-all clean build:css assets --parallel watch:scss budo"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
