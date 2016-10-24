@@ -4,6 +4,7 @@
 @import 'form-input';
 @import 'submit-button';
 @import 'message-box';
+@import 'http-form';
 
 $background-color: #F0F0E9;
 // MOBILE
@@ -18,15 +19,15 @@ $background-color: #F0F0E9;
 @media screen and (min-width: 961px) {
   .page {
     // position: relative;
+    // height: 100%;
   }
 
   .login {
-    min-height: 512px;
 
   }
 
   .signup {
-
+    height: 100%;
   }
 }
 
