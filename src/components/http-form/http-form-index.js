@@ -1,26 +1,13 @@
-import {combineArray, mergeArray, combine, just} from 'most'
-import {objOf, curry} from 'ramda'
-import {div} from '@motorcycle/dom'
+import {just} from 'most'
+import {objOf} from 'ramda'
 import {holdSubject} from 'most-subject'
-// import intent from './form-intent'
-import model from './form-model'
-// import view from './form-view'
+import model from './http-form-model'
+import view from './http-form-view'
 import FormInput from '../form-input/form-input-index'
 import SubmitButton from '../submit-button/submit-button-index'
+import MessageBox from '../message-box/message-box-index'
 
-const view = (state$) => {
-  return state$.map(state => {
-    return div('.form', [
-    ]
-    .concat(
-      state.inputs,
-      [state.submitButton]
-    ))
-  })
-}
-
-
-const Form = (sources, prop$) => {
+const HTTPForm = (sources, prop$) => {
   const inputWrapper = sources => (as, prop$, change$) => {
     const sinks = FormInput(sources, prop$, change$)
     const rememberedValue$ = holdSubject(1)
@@ -33,20 +20,29 @@ const Form = (sources, prop$) => {
     }
   }
   const buttonWrapper = sources => (prop$, change$) => {
-    const sinks = SubmitButton(sources, prop$, change$)
-    return sinks
+    return SubmitButton(sources, prop$, change$)
+  }
+  const messageBoxWrapper = sources => (prop$, change$) => {
+    return MessageBox(sources, just([]), change$)
   }
   const factories = {
     createInput: inputWrapper(sources),
-    createButton: buttonWrapper(sources)
+    createButton: buttonWrapper(sources),
+    createMessageBox: messageBoxWrapper(sources),
   }
-  const {state$, request$} = model({http$: sources.HTTP}, factories, prop$)
+
+  const {
+    state$,
+    request$,
+    responseMessages$
+  } = model({http$: sources.HTTP}, factories, prop$)
 
   return {
     DOM: view(state$),
     HTTP: request$,
-    data$: request$.map(req => req.send)
+    data$: request$.map(req => req.send),
+    responseMessages$: responseMessages$
   }
 }
 
-export default Form
+export default HTTPForm
