@@ -1,0 +1,26 @@
+// MOBILE
+@media screen and (max-width: 768px) {
+
+}
+// TABLET
+@media screen and (min-width: 769px) and (max-width: 960px) {
+
+}
+// DESKTOP
+@media screen and (min-width: 961px) {
+  .form-input {
+    display: list-item;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 700px;
+    padding: 5px;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 16px;
+    border: none;
+    border-bottom: 1px solid #5C5C58;
+    background: transparent;
+    outline: 0;
+    transition: background 0.3s;
+  }
+}
