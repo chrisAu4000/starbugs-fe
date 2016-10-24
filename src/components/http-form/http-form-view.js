@@ -3,13 +3,11 @@ import {curry} from 'ramda'
 
 const view = (state$) => {
   return state$.map(state => {
-    return div('.form', [
-    ]
-    .concat(
-      state.messageBox,
-      state.inputs,
-      [state.submitButton]
-    ))
+    return div('.http-form', [
+      div('.message-box-wrapper', [state.messageBox]),
+      div('.form-wrapper', state.inputs),
+      div('.button-wrapper', [state.submitButton])
+    ])
   })
 }
 

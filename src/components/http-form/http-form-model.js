@@ -45,11 +45,10 @@ const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) =>
       .chain(res$ => res$.recoverWith(e => just(e.response.body)))
     )
     .multicast()
-    .tap(x => console.log(x))
   const error$ = response$
     .filter(res => res.status !== 200)
     .map(error => ({error: [error.i18n]}))
-    .multicast()
+    // .multicast()
   error$.observe(res => btnStateChange$.next((state) =>
     Object.assign({}, state, {disabled: false, spinner: false})))
   error$.observe(res => inputStateChange$.next((state) =>
@@ -57,7 +56,7 @@ const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) =>
   const success$ = response$
     .filter(res => res.status === 200)
     .map(res => ({success: [res.body.i18n]}))
-    .multicast()
+    // .multicast()
   success$.observe(res => btnStateChange$.next((state) =>
     Object.assign({}, state, {disabled: true, spinner: false})))
   const messages$ = subject()

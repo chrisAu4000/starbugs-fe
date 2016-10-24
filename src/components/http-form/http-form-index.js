@@ -39,7 +39,7 @@ const HTTPForm = (sources, prop$) => {
 
   return {
     DOM: view(state$),
-    HTTP: request$,
+    HTTP: request$.multicast(),
     data$: request$.map(req => req.send),
     responseMessages$: responseMessages$
   }
