@@ -22,123 +22,11 @@ $background-color: #F0F0E9;
 
   .login {
     min-height: 512px;
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -1;
-    .messages {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      margin: auto;
-      width: 30%;
-      transition: top 1s;
-      ul.message-list {
-        padding: 0;
-        li.message-list-item {
-          padding: 8px;
-          color: #595E5B;
-          font-size: 16px;
-          list-style: none;
-          border-radius: 5px;
-        }
-        li.message-list-item.error {
-          background: #FC9A9A;
-        }
-        li.message-list-item.success {
-          background: #91E6B5;
-        }
-      }
-    }
-    .login-form {
-      position: absolute;
-      top: 0; left: 0; bottom: 0; right: 0;
-      margin: auto;
-      width: 30%;
-      height: 30%;
-      text-align: center;
-      input {
-        display: list-item;
-        box-sizing: border-box;
-        width: 100%;
-        padding: 5px;
-        margin: 10px 0;
-        text-align: center;
-        font-size: 16px;
-        border: none;
-        border-bottom: 1px solid #5C5C58;
-        background: transparent;
-        outline: 0;
-        transition: background 0.3s;
-      }
-      button {
-        position: relative;
-        left: 0;
-        width: 100%;
-        margin: 0;
-        padding: 10px;
-        font-size: 16px;
-        background: #91E6B5;
-        color: #595E5B;
-        border-radius: 3px;
-        transition: border-radius 1s, width 1s, left 1s, color 0.8s, opacity 0.5s;
-      }
-      button:hover {
-        cursor: pointer;
-      }
-      button:active {
-        background: #B0F7CE;
-      }
-    }
+
   }
 
   .signup {
-    // min-height: 512px;
-    // position: absolute;
-    position: relative;
-    margin-top: 50%;
-    // top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -1;
-    transform: translateY(-50%);
-  //   .signup-form {
-  //     // position: absolute;
-  //     position: relative;
-  //     top: 0; left: 0; bottom: 0; right: 0;
-  //     margin: auto;
-  //     width: 30%;
-  //     height: 30%;
-  //     text-align: center;
-  //     input {
-  //       display: list-item;
-  //       box-sizing: border-box;
-  //       width: 100%;
-  //       padding: 5px;
-  //       margin: 10px 0;
-  //       text-align: center;
-  //       font-size: 16px;
-  //       border: none;
-  //       border-bottom: 1px solid #5C5C58;
-  //       background: transparent;
-  //       outline: 0;
-  //       transition: background 0.3s;
-  //     }
-  //     button {
-  //       position: relative;
-  //       left: 0;
-  //       width: 100%;
-  //       margin: 0;
-  //       padding: 10px;
-  //       font-size: 16px;
-  //       background: #91E6B5;
-  //       color: #595E5B;
-  //       border-radius: 3px;
-  //       transition: border-radius 1s, width 1s, left 1s, color 0.8s, opacity 0.5s;
-  //     }
-  //     button:hover {
-  //       cursor: pointer;
-  //     }
-  //     button:active {
-  //       background: #B0F7CE;
-  //     }
-  //   }
+
   }
 }
 
@@ -147,15 +35,25 @@ button {
   border: none;
   outline: none;
 }
+html {
+  height: 100%;
+}
 body {
+  height: 100%;
   margin: 0;
   font-family: 'Helvetica', sans-serif;
   background: $background-color;
+  #application {
+    height: 100%;
+    .app {
+      height: 100%;
+    }
+  }
   .page {
-    top: 0; bottom: 0; left: 0; right: 0;
-    position: absolute;
-    margin: 0;
-    z-index: -1
+    // top: 0; bottom: 0; left: 0; right: 0;
+    // position: absolute;
+    // margin: 0;
+    // z-index: -1
   }
 }
 div {

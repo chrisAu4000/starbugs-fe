@@ -5,7 +5,9 @@ const view = (prop$) => {
     nav([
       ul('.navigation-list', props.map(p =>
         li('.navigation-list-item', [
-          a('.navigation-list-item-link', {attrs: {data: p.href}}, [p.title])
+          div('.navigation-list-tc', [
+            a('.navigation-list-item-link', {attrs: {data: p.href}}, [p.title])
+          ])
         ]))
       )
     ])

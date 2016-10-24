@@ -10,22 +10,35 @@
 // DESKTOP
 @media screen and (min-width: 961px) {
   .navigation {
-    position: absolute;
     top: 0;
     left: 0;
     right: 0;
+    height: 6%;
     nav {
       background: black;
+      height: 100%;
       ul.navigation-list {
+        height: 100%;
         margin: 0;
         padding: 0;
         overflow: hidden;
         li.navigation-list-item {
           list-style: none;
           float: left;
-          padding: 20px 16px 16px 16px;
+          height: 100%;
+          padding: 0 16px;
           transition: background 0.3s;
+          vertical-align: middle;
+          .navigation-list-tc {
+            height: 100%;
+            display: table;
+          }
           a.navigation-list-item-link {
+            display: table-cell;
+            height: 100%;
+            line-height: 50%;
+            vertical-align: middle;
+            font-size: 100%;
             color: #E3E35B;
           }
         }
@@ -36,7 +49,6 @@
 
         li.navigation-list-item:first-of-type {
           background: #E3E35B;
-          padding: 16px 16px;
           a.navigation-list-item-link:first-of-type {
             font-family: 'Bungee Inline', cursive;
             color: black;

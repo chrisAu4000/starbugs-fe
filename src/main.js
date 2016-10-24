@@ -19,7 +19,7 @@ const navProps = [
 const main = (sources) => {
   const page       = Router(sources, navProps)
   const navigation = Navigation(sources, navProps)
-  const initialRoute$ = just('/initAdmin');
+  const initialRoute$ = just('/sign-up');
 
   const view$      = view({navigation$: navigation.DOM, page$: page.DOM})
   const route$     = mergeArray([navigation.router, page.router, initialRoute$])
