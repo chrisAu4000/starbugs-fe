@@ -1,6 +1,11 @@
-import {just, combineArray, merge} from 'most'
-import {div, input, button, label} from '@motorcycle/dom'
+import {just, combineArray, merge, combine} from 'most'
+import {subject} from 'most-subject'
+import {div, input, button, label, h} from '@motorcycle/dom'
 import config from '../../config'
+import Form from '../../components/form/form-index'
+import FormInput from '../../components/form-input/form-input-index'
+import SubmitButton from '../../components/submit-button/submit-button-index'
+import MessageBox from '../../components/message-box/message-box-index'
 
 const intent = ({DOM}) => {
   return {
@@ -11,76 +16,95 @@ const intent = ({DOM}) => {
   }
 }
 
-const model = ({username$, password$, email$, submit$}, {url}) => {
-  const formValidation = ({username, password, email}) => {
+const model = (formData$, http$, url) => {
+  const validation = ({username, password, verifyPassword, email}) => {
     return username.length > 0
         && password.length > 8
+        && password === verifyPassword
         && email.length > 5
   }
-  const form$ = combineArray(
-    (username, password, email) => ({username, password, email}),
-    [username$, password$, email$]
-  )
-
-  const request$ = form$
-    .startWith({username: '', password: '', email: ''})
-    .sampleWith(submit$)
-    .filter(formValidation)
-    .map(val => ({
-      url: url,
-      method: 'POST',
-      send: val
-    }))
-
-  return {
-    request$
-  }
+  const toRequest = (data) => ({
+    url: config.url.signup,
+    method: 'POST',
+    send: data
+  })
+  const handleBadRequest$ = (res$) =>
+    res$.recoverWith(err => just({body: {message: err.message}}))
+  const request$ = formData$
+    .filter(validation)
+    .map(toRequest)
+  const response$ = http$
+    .filter(res$ => res$.request.url === config.url.signup)
+    .map(handleBadRequest$)
+    .join()
+  const success$ = response$
+    .filter(res => res.status === 200)
+  const error$ = response$
+    .filter(res => res.status !== 200)
+  const state$ = merge(
+      success$.map(res => ({success: true, messages: [res.body.message]})),
+      error$.map(err => ({success: false, messages: [err.message]}))
+    )
+    .startWith({success: false, messages: []})
+  return {request$, state$}
 }
 
 const view = (state$) => {
   return state$.map(state => {
-    return div('.signup', [
-      label('.username-label', ['Name:']),
-      input('.username', {attrs: {type: 'text', value: 'username'}}),
-      // input('.username', {attrs: {type: 'text'}}),
-      label('.email-label', ['E-Mail:']),
-      input('.email', {attrs: {type: 'email', value: 'a@b.cd'}}),
-      // input('.email', {attrs: {type: 'email'}}),
-      label('.password-label', ['Password:']),
-      input('.password', {attrs: {type: 'password', value: 'password1'}}),
-      // input('.password', {attrs: {type: 'password'}}),
-      button('.submit', ['Sign Up']),
-      div('.message', !state.status ? [] : [
-        label('.response', state.status === 'OK'
-          ? ['Hi, ' + state.message + ' check your mails.']
-          : ['Shit, somthing went wrong: ' + state.message])
-      ])
-    ])
+    // console.log(state)
+    return div('.signup', [state.messageBox, state.form])
   })
 }
 
 const Init = (sources) => {
-  const actions = intent(sources)
-  const {request$} = model(actions, {url: config.url.signup})
-  // const request$ = just({
-  //   url: config.url.signup,
-  //   method: 'post',
-  //   send: {username: 'username', password: 'password1', email: 'a@b.cd'}
-  // });
-  const success$ = sources.HTTP
-    .filter(res$ => res$.request.url === config.url.signup)
-    .join()
-    .tap(x => console.log(x))
-    .map(res => ({message: res.data[0].username, status: 'OK'}))
-  const error$ = sources.HTTP
-    .filter(res$ => res$.request.url === config.url.signup)
-    .join()
-    .recoverWith(err => just({message: err.response.body.message, status: 'FAIL'}))
-  const state$ = merge(success$, error$).startWith({})
+  const formProp$ = just({
+    inputs: [
+      {as: 'username',        prop$: just({disabled: false, placeholder: 'Username', type: 'text', value:''})},
+      {as: 'email',           prop$: just({disabled: false, placeholder: 'Email', type: 'email', value:''})},
+      {as: 'password',        prop$: just({disabled: false, placeholder: 'Password', type: 'password', value:''})},
+      {as: 'verify-password', prop$: just({disabled: false, placeholder: 'Verify Password', type: 'password', value:''})}
+    ],
+    button: {
+      prop$: just({disabled: false, spinner: false, label: 'Sign In'})
+    },
+    http: {
+      url: config.url.signup,
+      method: 'POST'
+    }
+  })
+  const msgBoxProp$ = just([
+      {type: 'error', message: 'This is an error :('},
+      {type: 'success', message: 'This is a success :)'}
+    ])
+  const change$ = subject()
+  const messageBox = MessageBox(sources, msgBoxProp$, change$)
+  const form = Form(sources, formProp$)
+  // const {request$, state$} = model(form.data$, sources.HTTP, config.url.signup)
+  const c$ = sources.DOM.select('.page').events('click').constant(+1)
+    .scan((a, c) => a+c, 0)
+    .map(x => {
+      return x % 2 === 0 ? (mgs) => [] : (mgs) => mgs.concat([{type: 'error', message: 'YEAH'}])
+      })
+  c$.observe(x => change$.next(x))
+  // const formState$ = state$.map(state => {
+  //   if (state.success) {
+  //     return 'success'
+  //   }
+  //   if (state.messages.length === 0) {
+  //     return 'init'
+  //   }
+  //   if (state.messages.length > 0) {
+  //     return 'error'
+  //   }
+  // })
+  // formState$.observe(formState => formStateProxy$.next(formState))
+  const state$ = combineArray((i1, i2) => {
+    return {form: i1, messageBox: i2}
+  }, [form.DOM, messageBox.DOM])
   const vtree$ = view(state$)
   return {
     DOM: vtree$,
-    HTTP: request$,
+    HTTP: form.HTTP,
   }
 }
 

@@ -1,10 +1,7 @@
-import {just} from 'most'
-import {div, button, input, h, svg} from '@motorcycle/dom'
-import {delay} from 'most'
+import {delay, just} from 'most'
 import model from './login-model'
 import view from './login-view'
 import intent from './login-intent'
-import config from '../../config'
 
 /*
 States:
@@ -20,7 +17,6 @@ const Login = (sources) => {
     success: [],
     spinner: false
   });
-
 
   const actions = intent(sources);
   const {state$, request$} = model({

@@ -10,8 +10,10 @@
 // DESKTOP
 @media screen and (min-width: 961px) {
   .navigation {
+    position: absolute;
     top: 0;
     left: 0;
+    right: 0;
     nav {
       background: black;
       ul.navigation-list {

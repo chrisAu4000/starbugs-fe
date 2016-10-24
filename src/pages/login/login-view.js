@@ -6,7 +6,6 @@ const makeListItem = curry((cls, message) => {
 })
 const view = (state$) => {
   return state$.map(state => {
-    console.log(state)
     return div('.login', [
       div('.messages', {style: {top: state.errors.length > 0 ? '15%' : '0'}}, [
         ul('.message-list', state.errors.map(makeListItem('.error')))
