@@ -12,21 +12,21 @@ import Login from './pages/login/login-index.js'
 const navProps = [
   {href: '/', title: 'Starbugs', handler: Home}
 , {href: '/slideshow', title: 'Slideshow', handler: Slideshow}
-, {href: '/initAdmin', title: 'Admin', handler: Init}
+, {href: '/initAdmin', title: 'Signup', handler: Init}
 , {href: '/login', title: 'Login', handler: Login}
 ]
 
 const main = (sources) => {
   const page       = Router(sources, navProps)
   const navigation = Navigation(sources, navProps)
-  const initialRoute$ = just('/login');
+  const initialRoute$ = just('/initAdmin');
 
   const view$      = view({navigation$: navigation.DOM, page$: page.DOM})
   const route$     = mergeArray([navigation.router, page.router, initialRoute$])
   const http$      = mergeArray([page.HTTP])
   return {
     DOM: view$,
-    HTTP: http$,
+    HTTP: http$.tap(x => console.log(x)),
     router: route$
   }
 }

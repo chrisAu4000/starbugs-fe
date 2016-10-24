@@ -1,0 +1,36 @@
+// MOBILE
+@media screen and (max-width: 768px) {
+
+}
+// TABLET
+@media screen and (min-width: 769px) and (max-width: 960px) {
+
+}
+// DESKTOP
+@media screen and (min-width: 961px) {
+  .message-box {
+    max-width: 700px;
+    overflow: hidden;
+    height: 210px;
+    .message-box-list {
+      position: relative;
+      list-style: none;
+      padding: 0;
+      transition: opacity 0.5s, bottom 0.5s;
+      .message-box-list-item {
+        padding: 8px;
+        margin: 5px 0;
+        color: #595E5B;
+        font-size: 16px;
+        list-style: none;
+        border-radius: 5px;
+      }
+      .message-box-list-item.success {
+        background: #91E6B5;
+      }
+      .message-box-list-item.error {
+        background: #FC9A9A;
+      }
+    }
+  }
+}
