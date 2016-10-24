@@ -12,7 +12,7 @@ const model = (actions, wrapper, init) => {
     return {id, DOM: rememberedDom$, destroy$: sinks.destroy$}
   }
 
-  const addItemMod$ = actions.add$.map(() => {
+  const addItem$ = actions.add$.map(() => {
     const item = createNewItem({isChecked: false, hasFocus: false, value: ''})
     return (items) => {
       return Array.prototype.concat([], items, [item])
@@ -29,7 +29,7 @@ const model = (actions, wrapper, init) => {
     // ? [createNewItem({isChecked: false, hasFocus: false, value: ''})]
 
 
-  return merge(addItemMod$, removeItem$)
+  return merge(addItem$, removeItem$)
     .scan((items, transformation) => transformation(items), initialState)
     .multicast()
 }

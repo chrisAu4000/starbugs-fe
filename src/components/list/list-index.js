@@ -1,5 +1,4 @@
-import {div, ul, li, button} from '@motorcycle/dom'
-import {just, from, mergeArray} from 'most'
+import {just, mergeArray} from 'most'
 import {subject} from 'most-subject'
 import isolate from '@cycle/isolate'
 import ListItem from '../list-item/list-item-index'
@@ -33,7 +32,7 @@ const List = (sources, props) => {
   const itemActions = {destroy$: subject()}
   const actions = intent(sources.DOM, itemActions)
   const itemWrapper = makeItemWrapper(sources)
-  const items$ = model(actions, itemWrapper, initialState)//.startWith([])
+  const items$ = model(actions, itemWrapper, initialState)
   const itemRemove$ = items$
     .chain(items => mergeArray(items.map(item => item.destroy$)))
   itemRemove$.observe(x => itemActions.destroy$.next(x))
