@@ -6,13 +6,13 @@ import config from './config'
 
 import Home from './pages/home/home-index'
 import Slideshow from './pages/slideshow/slideshow-index'
-import Init from './pages/init/init-index'
+import SignUp from './pages/sign-up/sign-up-index'
 import Login from './pages/login/login-index.js'
 
 const navProps = [
   {href: '/', title: 'Starbugs', handler: Home}
 , {href: '/slideshow', title: 'Slideshow', handler: Slideshow}
-, {href: '/initAdmin', title: 'Signup', handler: Init}
+, {href: '/sign-up', title: 'Signup', handler: SignUp}
 , {href: '/login', title: 'Login', handler: Login}
 ]
 
@@ -26,7 +26,7 @@ const main = (sources) => {
   const http$      = mergeArray([page.HTTP])
   return {
     DOM: view$,
-    HTTP: http$.tap(x => console.log(x)),
+    HTTP: http$,
     router: route$
   }
 }
