@@ -1,15 +1,17 @@
 import {just, combineArray, merge, combine} from 'most'
-import {subject} from 'most-subject'
+import {subject, holdSubject} from 'most-subject'
+import {curry} from 'ramda'
+import config from '../../config'
 
 const argsToArray = function() {
   return Array.prototype.slice.call(arguments)
 }
 const arrayToObj = (arr) => arr.reduce((a, c) => Object.assign({}, a, c), {})
-const toRequest = http => data => ({
+const toRequest = curry((http, data) => ({
   url: http.url,
   method: http.method,
   send: arrayToObj(data)
-})
+}))
 
 const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) => {
   const inputStateChange$ = subject()
@@ -28,17 +30,18 @@ const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) =>
     .map(({button}) => button.prop$)
     .map(props => createButton(props, btnStateChange$))
     .multicast()
-  const submitBtnClick$ = submitBtn$.chain(btn => btn.clicked$)
-  const request$ = prop$
-    .chain(({http}) => inputValue$
-      .sampleWith(submitBtnClick$)
-      .map(toRequest(http))
+  const submitBtnClick$ = submitBtn$
+    .chain(btn => btn.clicked$)
+  const request$ = combine(
+      toRequest,
+      prop$.map(props => props.http),
+      inputValue$.sampleWith(submitBtnClick$)
     )
+    .tap(_ => btnStateChange$.next(state =>
+      Object.assign({}, state, {disabled: true, spinner: true})))
+    .tap(_ => inputStateChange$.next(state =>
+      Object.assign({}, state, {disabled: true})))
     .multicast()
-  request$.observe(req => btnStateChange$.next((state) =>
-    Object.assign({}, state, {disabled: true, spinner: true})))
-  request$.observe(req => inputStateChange$.next((state) =>
-    Object.assign({}, state, {disabled: true})))
   const response$ = prop$
     .chain(({http}) => http$
       .filter(res$ => res$.request.url === http.url)
@@ -47,27 +50,22 @@ const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) =>
     .multicast()
   const error$ = response$
     .filter(res => res.status !== 200)
-    .map(error => ({error: [error.i18n]}))
-    // .multicast()
-  error$.observe(res => btnStateChange$.next((state) =>
-    Object.assign({}, state, {disabled: false, spinner: false})))
-  error$.observe(res => inputStateChange$.next((state) =>
-    Object.assign({}, state, {disabled: false})))
+    .map(error => [{type: 'error', message: error.i18n}])
+    .multicast()
+    .tap(_ => btnStateChange$.next((state) =>
+      Object.assign({}, state, {disabled: false, spinner: false})))
+    .tap(_ => inputStateChange$.next((state) =>
+      Object.assign({}, state, {disabled: false})))
   const success$ = response$
     .filter(res => res.status === 200)
-    .map(res => ({success: [res.body.i18n]}))
-    // .multicast()
-  success$.observe(res => btnStateChange$.next((state) =>
-    Object.assign({}, state, {disabled: true, spinner: false})))
-  const messages$ = subject()
-  const messageBox = prop$.map(({messageBox}) => createMessageBox(messageBox.prop$, messages$))
+    .map(res => [{type: 'success', message: res.body.i18n}])
+    .multicast()
+    .tap(_ => btnStateChange$.next((state) =>
+      Object.assign({}, state, {disabled: true, spinner: false})))
   const responseMessages$ = merge(success$, error$)
-  responseMessages$.map(messages => {
-    const success = messages.success ? messages.success.map(m => ({type: 'success', message: m})) : []
-    const errors = messages.error ? messages.error.map(m => ({type: 'error', message: m})) : []
-    return Array.prototype.concat(success, errors)
-  })
-  .observe(x => messages$.next((state) => x))
+    .map(x => _ => x)
+  const messageBox$ = prop$
+    .map(({messageBox}) => createMessageBox(messageBox.prop$, responseMessages$))
   const inputDOM$ = inputs$
     .chain(inputs =>{
       return combineArray(
@@ -78,16 +76,10 @@ const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) =>
     .map(iDoms => ({inputs: iDoms}))
   const submitBtnDOM$ = submitBtn$.chain(btn => btn.DOM)
     .map(bDom => ({submitButton: bDom}))
-  const messageBoxDOM$ = messageBox.chain(box => box.DOM)
+  const messageBoxDOM$ = messageBox$.chain(box => box.DOM)
     .map(bDom => ({messageBox: bDom}))
-  const state$ = combineArray(
-      Object.assign, [
-        messageBoxDOM$,
-        inputDOM$,
-        submitBtnDOM$
-      ]
-    )
-  return {state$, request$, responseMessages$}
+  const state$ = combineArray(Object.assign, [messageBoxDOM$,inputDOM$,submitBtnDOM$])
+  return {state$, request$, response$}
 }
 
 export default model;

@@ -15,15 +15,34 @@ const HTTPForm = (sources, prop$) => {
     sinks.value$.observe(val => rememberedValue$.next(val))
     sinks.DOM.observe(dom => rememberedDom$.next(dom))
     return {
-      DOM: rememberedDom$,
-      value$: rememberedValue$.map(objOf(as)),
+      DOM: sinks.DOM,
+      value$: sinks.value$.map(objOf(as))
     }
+    // {
+    //   DOM: rememberedDom$,
+    //   value$: rememberedValue$.map(objOf(as)),
+    // }
   }
   const buttonWrapper = sources => (prop$, change$) => {
-    return SubmitButton(sources, prop$, change$)
+    const sinks = SubmitButton(sources, prop$, change$)
+    const rememberedDom$ = holdSubject(1)
+    const rememberedValue$ = holdSubject(1)
+    sinks.DOM.observe(dom => rememberedDom$.next(dom))
+    sinks.clicked$.observe(c => rememberedValue$.next(c))
+    return sinks;
+    // {
+    //   DOM: rememberedDom$,
+    //   clicked$: rememberedValue$
+    // }
   }
   const messageBoxWrapper = sources => (prop$, change$) => {
-    return MessageBox(sources, just([]), change$)
+    const sinks = MessageBox(sources, just([]), change$)
+    const rememberedDom$ = holdSubject(1)
+    sinks.DOM.observe(dom => rememberedDom$.next(dom))
+    return sinks;
+    // return {
+    //   DOM: rememberedDom$
+    // }
   }
   const factories = {
     createInput: inputWrapper(sources),
@@ -39,7 +58,7 @@ const HTTPForm = (sources, prop$) => {
 
   return {
     DOM: view(state$),
-    HTTP: request$.multicast(),
+    HTTP: request$,
     data$: request$.map(req => req.send),
     responseMessages$: responseMessages$
   }

@@ -52,7 +52,7 @@
     "@motorcycle/dom": "^3.0.0",
     "@motorcycle/http": "^2.2.3",
     "cyclic-router": "^3.0.1",
-    "most": "1.0.1",
+    "most": "^1.0.1",
     "most-subject": "^4.1.3",
     "ramda": "^0.19.1",
     "switch-path": "^1.1.8"
