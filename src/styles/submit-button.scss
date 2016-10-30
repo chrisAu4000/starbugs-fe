@@ -1,3 +1,5 @@
+$offset: 87;
+$duration: 1.4s;
 // MOBILE
 @media screen and (max-width: 768px) {
 
@@ -8,40 +10,26 @@
 }
 // DESKTOP
 @media screen and (min-width: 961px) {
-  .relative {
-    position: relative;
-    transform: translateY(38px);
-  }
   .submit-button {
-    position: absolute;
-    width: 100%;
     max-width: 700px;
+    height: 38px;
+    text-align: center;
     .submit {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: 0;
+      position: relative;
       height: 38px;
       padding: 10px 0;
       font-size: 16px;
       background: #91E6B5;
       color: #595E5B;
       border-radius: 3px;
-      transition: border-radius 0.5s, width 0.5s, left 0.5s, color 0.3s, opacity 1s;
+      transition: border-radius 0.5s, width 0.5s, color 0.3s, opacity 1s;
       outline: none;
     }
-
-    $offset: 87;
-    $duration: 1.4s;
     .spinner {
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: 0 auto;
-      animation: rotator $duration linear infinite;
       position: absolute;
-      // top: 88px;
+      left: 0; right: 0;
+      margin: auto;
+      animation: rotator $duration linear infinite;
       opacity: 0;
       transition: opacity 1s;
       z-index: -1;
