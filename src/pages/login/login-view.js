@@ -6,7 +6,10 @@ const makeListItem = curry((cls, message) => {
 })
 const view = (state$) => {
   return state$.map(state => {
-    return div('.login', [state.form])
+    return div('.login', [
+      state.messageBox,
+      state.form
+    ])
   })
 }
 

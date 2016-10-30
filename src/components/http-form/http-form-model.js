@@ -1,4 +1,4 @@
-import {just, combineArray, merge, combine} from 'most'
+import {just, combineArray, merge, combine, mergeArray} from 'most'
 import {subject, holdSubject} from 'most-subject'
 import {curry} from 'ramda'
 import config from '../../config'
@@ -10,7 +10,7 @@ const arrayToObj = (arr) => arr.reduce((a, c) => Object.assign({}, a, c), {})
 const toRequest = curry((http, data) => ({
   url: http.url,
   method: http.method,
-  send: arrayToObj(data)
+  send: data
 }))
 
 const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) => {
@@ -32,10 +32,24 @@ const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) =>
     .multicast()
   const submitBtnClick$ = submitBtn$
     .chain(btn => btn.clicked$)
+  const formData$ = combine(
+      (validation = () => [], data) =>{
+        const res = validation(data)
+        return res.length === 0 ? data : res
+      },
+      prop$.map(props => props.validation),
+      inputValue$.sampleWith(submitBtnClick$).map(arrayToObj)
+    )
+    .multicast()
+  const validationMessage$ = formData$
+    .filter(data => Array.isArray(data) === true)
+    .map(messages => messages.map(message => ({type: 'error', message: message})))
+  const validFormData$ = formData$
+    .filter(data => Array.isArray(data) === false)
   const request$ = combine(
       toRequest,
       prop$.map(props => props.http),
-      inputValue$.sampleWith(submitBtnClick$)
+      validFormData$
     )
     .tap(_ => btnStateChange$.next(state =>
       Object.assign({}, state, {disabled: true, spinner: true})))
@@ -62,24 +76,14 @@ const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) =>
     .multicast()
     .tap(_ => btnStateChange$.next((state) =>
       Object.assign({}, state, {disabled: true, spinner: false})))
-  const responseMessages$ = merge(success$, error$)
-    .map(x => _ => x)
-  const messageBox$ = prop$
-    .map(({messageBox}) => createMessageBox(messageBox.prop$, responseMessages$))
+  const messages$ = mergeArray([success$, error$, validationMessage$])
   const inputDOM$ = inputs$
-    .chain(inputs =>{
-      return combineArray(
-        argsToArray,
-        inputs.map(input => input.DOM)
-      )}
-    )
+    .chain(inputs => combineArray(argsToArray, inputs.map(input => input.DOM)))
     .map(iDoms => ({inputs: iDoms}))
   const submitBtnDOM$ = submitBtn$.chain(btn => btn.DOM)
     .map(bDom => ({submitButton: bDom}))
-  const messageBoxDOM$ = messageBox$.chain(box => box.DOM)
-    .map(bDom => ({messageBox: bDom}))
-  const state$ = combineArray(Object.assign, [messageBoxDOM$,inputDOM$,submitBtnDOM$])
-  return {state$, request$, response$}
+  const state$ = combineArray(Object.assign, [inputDOM$, submitBtnDOM$])
+  return {state$, request$, messages$}
 }
 
 export default model;

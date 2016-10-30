@@ -1,6 +1,7 @@
-import {just} from 'most'
+import {just, combine} from 'most'
 import view from './login-view'
 import HTTPForm from '../../components/http-form/http-form-index'
+import MessageBox from '../../components/message-box/message-box-index'
 import config from '../../config'
 
 const Login = (sources) => {
@@ -9,9 +10,6 @@ const Login = (sources) => {
       {as: 'username', prop$: just({disabled: false, placeholder: 'Username', type: 'text', value: ''})},
       {as: 'password', prop$: just({disabled: false, placeholder: 'Password', type: 'password', value: ''})}
     ],
-    messageBox: {
-      prop$: just([])
-    },
     button: {
       prop$: just({disabled: false, spinner: false, label: 'Sign In'})
     },
@@ -22,7 +20,13 @@ const Login = (sources) => {
   })
 
   const form = HTTPForm(sources, formProp$)
-  const vtree$ = view(form.DOM.map(dom => ({form: dom})))
+  const messageBox = MessageBox(sources, just([]), form.messages$.map(m => _ => m))
+  const dom$ = combine(
+    (form, messageBox) => ({form, messageBox}),
+    form.DOM,
+    messageBox.DOM
+  )
+  const vtree$ = view(dom$)
   return {
     DOM: vtree$,
     HTTP: form.HTTP,

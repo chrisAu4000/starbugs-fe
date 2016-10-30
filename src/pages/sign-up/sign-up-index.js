@@ -1,6 +1,7 @@
 import {just, combineArray, merge, combine} from 'most'
 import config from '../../config'
 import HTTPForm from '../../components/http-form/http-form-index'
+import MessageBox from '../../components/message-box/message-box-index'
 import view from './sign-up-view'
 
 const Init = (sources) => {
@@ -20,10 +21,22 @@ const Init = (sources) => {
     http: {
       url: config.url.signup,
       method: 'POST'
+    },
+    validation: (data) => {
+      if(data['password'] !== data['verify-password']) {
+        return ['Password and verification must be equal.']
+      }
+      return []
     }
   })
   const form = HTTPForm(sources, formProp$)
-  const vtree$ = view(form.DOM.map(dom => ({form: dom})))
+  const messageBox = MessageBox(sources, just([]), form.messages$.map(m => _ => m))
+  const dom$ = combine(
+    (form, messageBox) => ({form, messageBox}),
+    form.DOM,
+    messageBox.DOM
+  )
+  const vtree$ = view(dom$)
   return {
     DOM: vtree$,
     HTTP: form.HTTP,
