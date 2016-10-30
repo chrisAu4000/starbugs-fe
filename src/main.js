@@ -9,20 +9,26 @@ import Slideshow from './pages/slideshow/slideshow-index'
 import SignUp from './pages/sign-up/sign-up-index'
 import Login from './pages/login/login-index.js'
 
-const navProps = [
-  {href: '/', title: 'Starbugs', handler: Home}
-, {href: '/slideshow', title: 'Slideshow', handler: Slideshow}
-, {href: '/sign-up', title: 'Signup', handler: SignUp}
-, {href: '/login', title: 'Login', handler: Login}
-]
+const navProp$ = just([
+  {href: '/', title: 'Starbugs'},
+  {href: '/login', title: 'Login', active: true},
+  {href: '/sign-up', title: 'Signup'}
+])
+
+const routerProps = {
+  '/': Home,
+  '/login': Login,
+  '/sign-up': SignUp,
+}
 
 const main = (sources) => {
-  const page       = Router(sources, navProps)
-  const navigation = Navigation(sources, navProps)
-  const initialRoute$ = just('/login');
+  const page       = Router(sources, routerProps)
+  const navigation = Navigation(sources, navProp$)
 
   const view$      = view({navigation$: navigation.DOM, page$: page.DOM})
-  const route$     = mergeArray([navigation.router, page.router, initialRoute$])
+  const route$     = mergeArray([navigation.router, page.router])
+                    .startWith('/login')
+                    .skipRepeats()
   const http$      = mergeArray([page.HTTP])
   return {
     DOM: view$,

@@ -3,11 +3,8 @@ import {empty} from 'most'
 
 const Router = (sources, props) => {
   const equalPath = (a, b) => a.path === b.path
-  const routerProps = props
-    .map(({href, handler}) => objOf(href, handler))
-    .reduce(merge, {})
 
-  const match$ = sources.router.define(routerProps)
+  const match$ = sources.router.define(props)
   const page$ = match$
     .skipRepeatsWith(equalPath)
     .map(({path, value}) => {

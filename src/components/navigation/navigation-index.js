@@ -3,14 +3,13 @@ import intent from './navigation-intent'
 import model from './navigation-model'
 import view from './navigation-view'
 
-const Navigation = (sources, props) => {
-  const prop$ = just(props)
+const Navigation = (sources, prop$) => {
   const action$ = intent(sources)
-  const update$ = model(action$, prop$)
-  const view$ = view(prop$)
+  const {state$, route$} = model(action$, prop$)
+  const view$ = view(state$)
   return {
     DOM: view$
-  , router: update$
+  , router: route$
   }
 }
 
