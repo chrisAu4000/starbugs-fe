@@ -2,6 +2,7 @@ import {just, combineArray, merge, combine} from 'most'
 import config from '../../config'
 import HTTPForm from '../../components/http-form/http-form-index'
 import MessageBox from '../../components/message-box/message-box-index'
+import {validate} from '../../validation/validation-index'
 import view from './sign-up-view'
 
 const Init = (sources) => {
@@ -19,22 +20,7 @@ const Init = (sources) => {
       url: config.url.signup,
       method: 'POST'
     },
-    validation: (data) => {
-      const errors = [];
-      if(data['username'].length < 2 || data['username'].length > 39) {
-        errors.push('Username must be between 2 and 39 characters.')
-      }
-      if(data['email'].length < 5 || data['email'].length > 254) {
-        errors.push('E-Mail must be between 5 and 254 characters.')
-      }
-      if(data['password'].length < 8 || data['password'].length > 39) {
-        errors.push('Password must be between 8 and 39 characters.')
-      }
-      if(data['password'] !== data['verify-password']) {
-        errors.push('Password and verification must be equal.')
-      }
-      return errors
-    }
+    validation: validate(['username', 'email', 'password', 'passwordVerification'])
   })
   const form = HTTPForm(sources, formProp$)
   const messageBox = MessageBox(sources, just([]), form.messages$.map(m => _ => m))
