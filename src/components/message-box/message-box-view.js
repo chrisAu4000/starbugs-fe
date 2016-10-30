@@ -14,7 +14,7 @@ const view = (state$) => {
       ul('.message-box-list', {
         style: {
           opacity: state.visible ? 1 : 0,
-          bottom: state.visible ? '0px' : -boxHeight + 'px'
+          bottom: state.visible ? '0px' : boxHeight + 'px'
         }
       },
         state.messages.slice(-5).map(makeMessage)

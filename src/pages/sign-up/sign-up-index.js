@@ -15,18 +15,25 @@ const Init = (sources) => {
     button: {
       prop$: just({disabled: false, spinner: false, label: 'Sign In'})
     },
-    messageBox: {
-      prop$: just([])
-    },
     http: {
       url: config.url.signup,
       method: 'POST'
     },
     validation: (data) => {
-      if(data['password'] !== data['verify-password']) {
-        return ['Password and verification must be equal.']
+      const errors = [];
+      if(data['username'].length < 2 || data['username'].length > 39) {
+        errors.push('Username must be between 2 and 39 characters.')
       }
-      return []
+      if(data['email'].length < 5 || data['email'].length > 254) {
+        errors.push('E-Mail must be between 5 and 254 characters.')
+      }
+      if(data['password'].length < 8 || data['password'].length > 39) {
+        errors.push('Password must be between 8 and 39 characters.')
+      }
+      if(data['password'] !== data['verify-password']) {
+        errors.push('Password and verification must be equal.')
+      }
+      return errors
     }
   })
   const form = HTTPForm(sources, formProp$)
