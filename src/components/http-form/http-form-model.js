@@ -13,7 +13,7 @@ const toRequest = curry((http, data) => ({
   send: data
 }))
 
-const model = ({http$}, {createInput, createButton, createMessageBox}, prop$) => {
+const model = ({http$}, {createInput, createButton}, prop$) => {
   const inputStateChange$ = subject()
   const inputs$ = prop$
     .map(({inputs}) => inputs
