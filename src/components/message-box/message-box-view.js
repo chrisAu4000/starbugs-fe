@@ -1,26 +1,29 @@
-import {div, ul, li} from '@motorcycle/dom'
+import {div, ul} from '@motorcycle/dom'
+import {combine} from 'most'
 
 const view = (state$) => {
-  return state$.map(state => {
+  // return state$.map(v => {
+  //   console.log(v)
+  //   return div(v.tap(x => console.log(x)))
+  // })
+  return state$.chain(state => {
     const boxHeight = 210
-    const makeMessage = ({type, message}) => {
-      return li('.message-box-list-item.' + type, [
-        message.length > 100
-        ? message.trim().slice(0, 100).concat('...')
-        : message.trim()
+    console.log(state)
+    return state.messages.map(msgs => {
+      return div('.message-box', [
+        ul('.message-box-list', {
+          style: {
+            transition: 'opacity ' + (state.duration / 1000) + 's, bottom ' + (state.duration / 1000) + 's',
+            opacity: state.visible ? 1 : 0,
+            bottom: state.visible ? '0px' : boxHeight + 'px'
+          }
+        },
+          msgs
+        )
       ])
-    }
-    return div('.message-box', [
-      ul('.message-box-list', {
-        style: {
-          opacity: state.visible ? 1 : 0,
-          bottom: state.visible ? '0px' : boxHeight + 'px'
-        }
-      },
-        state.messages.slice(-5).map(makeMessage)
-      )
-    ])
+    })
   })
+  .tap(x => console.log(x))
 }
 
 export default view
