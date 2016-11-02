@@ -1,6 +1,4 @@
-import {just} from 'most'
 import {objOf} from 'ramda'
-import {holdSubject} from 'most-subject'
 import model from './http-form-model'
 import view from './http-form-view'
 import FormInput from '../form-input/form-input-index'
@@ -19,7 +17,7 @@ const HTTPForm = (sources, prop$) => {
   }
   const factories = {
     createInput: inputWrapper(sources),
-    createButton: buttonWrapper(sources),
+    createButton: buttonWrapper(sources)
   }
   const {
     state$,

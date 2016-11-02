@@ -6,7 +6,7 @@ const config = {
   url: {
     init: host + ':' + port + vers + 'init/',
     signup: host + ':' + port + vers + 'user/signup',
-    login: host + ':' + port + vers + 'user/login',
+    login: host + ':' + port + vers + 'user/login'
   }
 }
 

@@ -2,7 +2,6 @@ import {run} from '@cycle/most-run'
 import {makeDOMDriver} from '@motorcycle/dom'
 import {createHashHistory} from 'history'
 import {makeRouterDriver} from 'cyclic-router'
-// import {makeHTTPDriver} from '@motorcycle/http'
 import {makeHTTPDriver} from './drivers/http-driver'
 import switchPath from 'switch-path'
 import Main from './main'
@@ -13,4 +12,5 @@ const sources = {
   router: makeRouterDriver(createHashHistory(), switchPath)
 }
 
-run(Main,sources)
+const app = run(Main, sources)
+export default app

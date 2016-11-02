@@ -3,8 +3,7 @@ import isolate from '@cycle/isolate'
 import view from './submit-button-view'
 import intent from './submit-button-intent'
 
-const SubmitButton = (sources, prop$, change$ = just((x)=>x)) => {
-  const click$ = intent(sources)
+const SubmitButton = (sources, prop$, change$ = just((x) => x)) => {
   const state$ = change$
     .scan((state, transform) => {
       return state.map(transform)

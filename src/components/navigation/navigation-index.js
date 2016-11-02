@@ -1,4 +1,4 @@
-import {just, merge, empty} from 'most'
+import {merge, empty} from 'most'
 import intent from './navigation-intent'
 import model from './navigation-model'
 import view from './navigation-view'
@@ -8,8 +8,8 @@ const Navigation = (sources, prop$, change$ = empty()) => {
   const {state$, route$} = model(action$, prop$)
   const view$ = view(state$)
   return {
-    DOM: view$
-  , router: route$
+    DOM: view$,
+    router: route$
   }
 }
 

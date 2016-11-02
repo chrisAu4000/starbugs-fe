@@ -1,4 +1,3 @@
-import {objOf, merge} from 'ramda'
 import {empty} from 'most'
 
 const Router = (sources, props) => {
@@ -8,12 +7,12 @@ const Router = (sources, props) => {
   const page$ = match$
     .skipRepeatsWith(equalPath)
     .map(({path, value}) => {
-    return value({
-      ...sources,
-      router: sources.router.path(path)
+      return value({
+        ...sources,
+        router: sources.router.path(path)
+      })
     })
-  })
-  .multicast()
+    .multicast()
   return {
     DOM: page$.chain(c => c.DOM),
     HTTP: page$.chain(c => c.HTTP || empty()),

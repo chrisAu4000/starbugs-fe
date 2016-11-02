@@ -1,5 +1,4 @@
-import {input, button, h, div} from '@motorcycle/dom'
-import {curry} from 'ramda'
+import {div} from '@motorcycle/dom'
 
 const view = (state$) => {
   return state$.map(state => {
@@ -10,4 +9,4 @@ const view = (state$) => {
   })
 }
 
-export default view;
+export default view

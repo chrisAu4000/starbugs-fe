@@ -1,9 +1,8 @@
-import {just, combineArray, merge, combine, mergeArray} from 'most'
-import {subject, holdSubject} from 'most-subject'
+import {just, combineArray, combine, mergeArray} from 'most'
+import {subject} from 'most-subject'
 import {curry} from 'ramda'
-import config from '../../config'
 
-const argsToArray = function() {
+const argsToArray = function () {
   return Array.prototype.slice.call(arguments)
 }
 const arrayToObj = (arr) => arr.reduce((a, c) => Object.assign({}, a, c), {})
@@ -33,7 +32,7 @@ const model = ({http$}, {createInput, createButton}, prop$) => {
   const submitBtnClick$ = submitBtn$
     .chain(btn => btn.clicked$)
   const formData$ = combine(
-      (validation = () => [], data) =>{
+      (validation = () => [], data) => {
         const res = validation(data)
         return res.length === 0 ? data : res
       },
@@ -51,9 +50,9 @@ const model = ({http$}, {createInput, createButton}, prop$) => {
       prop$.map(props => props.http),
       validFormData$
     )
-    .tap(_ => btnStateChange$.next(state =>
+    .tap(() => btnStateChange$.next(state =>
       Object.assign({}, state, {disabled: true, spinner: true})))
-    .tap(_ => inputStateChange$.next(state =>
+    .tap(() => inputStateChange$.next(state =>
       Object.assign({}, state, {disabled: true})))
     .multicast()
   const response$ = prop$
@@ -66,15 +65,15 @@ const model = ({http$}, {createInput, createButton}, prop$) => {
     .filter(res => res.status !== 200)
     .map(error => [{type: 'error', message: error.i18n}])
     .multicast()
-    .tap(_ => btnStateChange$.next((state) =>
+    .tap(() => btnStateChange$.next((state) =>
       Object.assign({}, state, {disabled: false, spinner: false})))
-    .tap(_ => inputStateChange$.next((state) =>
+    .tap(() => inputStateChange$.next((state) =>
       Object.assign({}, state, {disabled: false})))
   const success$ = response$
     .filter(res => res.status === 200)
     .map(res => [{type: 'success', message: res.body.i18n}])
     .multicast()
-    .tap(_ => btnStateChange$.next((state) =>
+    .tap(() => btnStateChange$.next((state) =>
       Object.assign({}, state, {disabled: true, spinner: false})))
   const messages$ = mergeArray([success$, error$, validationMessage$])
   const inputDOM$ = inputs$
@@ -86,4 +85,4 @@ const model = ({http$}, {createInput, createButton}, prop$) => {
   return {state$, request$, messages$}
 }
 
-export default model;
+export default model

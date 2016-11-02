@@ -16,8 +16,7 @@
       position: relative;
       list-style: none;
       padding: 0;
-      transition: opacity 0.5s, bottom 0.5s;
-      .message-box-list-item {
+      .message {
         padding: 8px;
         margin: 5px 0;
         color: #595E5B;
@@ -25,10 +24,10 @@
         list-style: none;
         border-radius: 5px;
       }
-      .message-box-list-item.success {
+      .message.success {
         background: #91E6B5;
       }
-      .message-box-list-item.error {
+      .message.error {
         background: #FC9A9A;
       }
     }

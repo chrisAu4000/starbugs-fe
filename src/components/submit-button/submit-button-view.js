@@ -13,7 +13,7 @@ const view = (state$) =>
           'margin': state.spinner ? '0 auto' : '0 0',
           'color': state.spinner ? 'transparent' : '#595E5B',
           'opacity': state.spinner ? '0' : '1',
-          'cursor': state.spinner ? 'default' : 'pointer',
+          'cursor': state.spinner ? 'default' : 'pointer'
         }
       }, [state.label]),
       h('svg', {
@@ -22,12 +22,13 @@ const view = (state$) =>
           width: '38px',
           height: '38px',
           viewBox: '0 0 39 39',
-          xmlns: "http://www.w3.org/2000/svg"
-        }, style: {
+          xmlns: 'http://www.w3.org/2000/svg'
+        },
+        style: {
           'opacity': state.spinner ? '1' : '0',
-          'cursor': state.spinner ? 'default' : 'pointer',
+          'cursor': state.spinner ? 'default' : 'pointer'
         }
-      },[
+      }, [
         h('circle', {
           attrs: {
             'class': 'path',

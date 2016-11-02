@@ -2,13 +2,16 @@ import {holdSubject} from 'most-subject'
 import {merge} from 'most'
 
 const model = (actions, wrapper, init) => {
+  /* eslint-disable fp/no-let */
   let mutableLastId = 0
-
+  /* eslint-enable */
   const createNewItem = (props) => {
+    /* eslint-disable fp/no-mutation */
     const id = mutableLastId++
     const sinks = wrapper(props, id)
     const rememberedDom$ = holdSubject(1)
     sinks.DOM.observe(x => rememberedDom$.next(x))
+    /* eslint-enable */
     return {id, DOM: rememberedDom$, destroy$: sinks.destroy$}
   }
 
@@ -26,8 +29,6 @@ const model = (actions, wrapper, init) => {
   })
 
   const initialState = init.map((props) => createNewItem(props))
-    // ? [createNewItem({isChecked: false, hasFocus: false, value: ''})]
-
 
   return merge(addItem$, removeItem$)
     .scan((items, transformation) => transformation(items), initialState)

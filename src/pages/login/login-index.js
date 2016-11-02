@@ -22,7 +22,7 @@ const Login = (sources) => {
   })
 
   const form = HTTPForm(sources, formProp$)
-  const messageBox = MessageBox(sources, just([]), form.messages$.map(m => _ => m))
+  const messageBox = MessageBox(sources, just([]), form.messages$.map(m => () => m))
   const dom$ = combine(
     (form, messageBox) => ({form, messageBox}),
     form.DOM,
@@ -31,7 +31,7 @@ const Login = (sources) => {
   const vtree$ = view(dom$)
   return {
     DOM: vtree$,
-    HTTP: form.HTTP,
+    HTTP: form.HTTP
   }
 }
 
