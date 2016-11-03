@@ -2,13 +2,8 @@ import {div, ul} from '@motorcycle/dom'
 import {combine} from 'most'
 
 const view = (state$) => {
-  // return state$.map(v => {
-  //   console.log(v)
-  //   return div(v.tap(x => console.log(x)))
-  // })
   return state$.chain(state => {
     const boxHeight = 210
-    console.log(state)
     return state.messages.map(msgs => {
       return div('.message-box', [
         ul('.message-box-list', {
@@ -23,7 +18,6 @@ const view = (state$) => {
       ])
     })
   })
-  .tap(x => console.log(x))
 }
 
 export default view

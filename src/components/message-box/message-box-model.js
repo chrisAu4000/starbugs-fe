@@ -1,6 +1,5 @@
 import {just, merge, concat, mergeArray, combineArray} from 'most'
 import {compose, objOf, assoc} from 'ramda'
-import hold from '@most/hold'
 
 const model = (prop$, createMessage, change$) => {
   const setVisibility = assoc('visible')
@@ -40,7 +39,7 @@ const model = (prop$, createMessage, change$) => {
       change$
       .loop((state$, fn) => {
         return {
-          seed: state$.map(fn).map(state => state.map(createMessage)).tap(x => console.log(x)),
+          seed: state$.map(fn).map(state => state.map(createMessage)),
           value: {prev$: state$, curr$: state$.map(fn).map(state => state.map(createMessage))}
         }
       }, prop$)
@@ -48,15 +47,13 @@ const model = (prop$, createMessage, change$) => {
     .chain(display)
     .multicast()
 
-  const messagesVTree$ = messages$
+  const state$ = messages$
     .map(messages => Object.assign({}, messages, {
-    messages: messages.messages.length === 0
-      ? just([])
-      : combineArray(toArray, messages.messages.map(message => message.DOM))
-        // .thru(hold)
+      messages: messages.messages.length === 0
+        ? just([])
+        : combineArray(toArray, messages.messages.map(message => message.DOM))
     }))
 
-  const state$ = messagesVTree$
   const messageAction$ = messages$
     .chain(({messages}) =>
       mergeArray(messages.map(message => message.action$))
