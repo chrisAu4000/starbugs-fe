@@ -27,9 +27,11 @@ const List = (sources, props) => {
   const actions = intent(sources.DOM, itemActions)
   const itemWrapper = makeItemWrapper(sources)
   const items$ = model(actions, itemWrapper, initialState)
+  /* eslint-disable */
   const itemRemove$ = items$
     .chain(items => mergeArray(items.map(item => item.destroy$)))
     .observe(x => itemActions.destroy$.next(x))
+  /* eslint-enable */
   const vtree$ = view(items$)
   return {
     DOM: vtree$

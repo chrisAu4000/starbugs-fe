@@ -14,10 +14,10 @@ const view = (items$) => {
 
     return items.length === 0
     ? just(div('.list', [addButtons]))
-    : combineArray(function () {
-      return Array.prototype.slice.call(arguments)
-    },
-    itemVNodeStreamsByKey)
+    : combineArray(
+      (...items) => items,
+      itemVNodeStreamsByKey
+    )
     .map(items => div('.list', [addButtons].concat(ul('.list-ul', items))))
   })
   .switch()

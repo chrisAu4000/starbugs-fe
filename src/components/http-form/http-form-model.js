@@ -2,9 +2,6 @@ import {just, combineArray, combine, mergeArray} from 'most'
 import {subject} from 'most-subject'
 import {curry} from 'ramda'
 
-const argsToArray = function () {
-  return Array.prototype.slice.call(arguments)
-}
 const arrayToObj = (arr) => arr.reduce((a, c) => Object.assign({}, a, c), {})
 const toRequest = curry((http, data) => ({
   url: http.url,
@@ -19,11 +16,13 @@ const model = ({http$}, {createInput, createButton}, prop$) => {
       .map(input => createInput(input.as, input.prop$, inputStateChange$))
     )
     .multicast()
+  /* eslint-disable fp/no-rest-parameters */
   const inputValue$ = inputs$
     .chain(inputs => combineArray(
-      argsToArray,
+      (...val) => val,
       inputs.map(input => input.value$))
     )
+  /* eslint-enable */
   const btnStateChange$ = subject()
   const submitBtn$ = prop$
     .map(({button}) => button.prop$)
@@ -76,9 +75,11 @@ const model = ({http$}, {createInput, createButton}, prop$) => {
     .tap(() => btnStateChange$.next((state) =>
       Object.assign({}, state, {disabled: true, spinner: false})))
   const messages$ = mergeArray([success$, error$, validationMessage$])
+  /* eslint-disable fp/no-rest-parameters */
   const inputDOM$ = inputs$
-    .chain(inputs => combineArray(argsToArray, inputs.map(input => input.DOM)))
+    .chain(inputs => combineArray((...dom) => dom, inputs.map(input => input.DOM)))
     .map(iDoms => ({inputs: iDoms}))
+  /* eslint-enable */
   const submitBtnDOM$ = submitBtn$.chain(btn => btn.DOM)
     .map(bDom => ({submitButton: bDom}))
   const state$ = combineArray(Object.assign, [inputDOM$, submitBtnDOM$])

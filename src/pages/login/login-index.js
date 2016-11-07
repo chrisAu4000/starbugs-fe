@@ -22,7 +22,7 @@ const Login = (sources) => {
   })
 
   const form = HTTPForm(sources, formProp$)
-  const messageBox = MessageBox(sources, just([]), form.messages$.map(m => () => m))
+  const messageBox = MessageBox(sources, just([]), form.messages$)
   const dom$ = combine(
     (form, messageBox) => ({form, messageBox}),
     form.DOM,

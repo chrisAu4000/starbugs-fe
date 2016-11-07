@@ -1,28 +1,37 @@
-import {just} from 'most'
-import {holdSubject} from 'most-subject'
+import {just, merge} from 'most'
+import {holdSubject, subject} from 'most-subject'
 import isolate from '@cycle/isolate'
 import view from './message-box-view'
 import model from './message-box-model'
 import Message from '../message/message-index'
 import MessageConfirm from '../message-confirm/message-confirm-index'
-
+const messages = {
+  success: MessageConfirm,
+  error: Message
+}
 const itemFactory = (sources) => {
-  let index = 0
-  return (props, i) => {
-    index += 1
-    const sinks = isolate(MessageConfirm)(sources, just(props))
+  return (props) => {
+    const sinks = isolate(messages[props.type])(sources, just(props))
     const rememberedDom$ = holdSubject(1)
     sinks.DOM.observe(dom => rememberedDom$.next(dom))
     return {
       DOM: rememberedDom$,
-      action$: sinks.action$.constant(index - 1)
+      action$: sinks.action$
     }
   }
 }
 
 const MessageBox = (sources, prop$, change$ = just((x) => x)) => {
-  const {state$, messageAction$} = model(prop$, itemFactory(sources), change$)
-  messageAction$.observe(x => console.log(x))
+  const deleteMessage$ = subject()
+  const {state$, messageAction$} = model(
+    prop$,
+    itemFactory(sources),
+    merge(
+      change$.map(arr => ({action: 'ADD_MESSAGE', payload: arr})),
+      deleteMessage$.map(message => ({action: 'DEL_MESSAGE', payload: message}))
+    )
+  )
+  messageAction$.observe(x => deleteMessage$.next(x))
   return {
     DOM: view(state$)
   }

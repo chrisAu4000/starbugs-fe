@@ -6,7 +6,7 @@ const model = (actions, wrapper, init) => {
   let mutableLastId = 0
   /* eslint-enable */
   const createNewItem = (props) => {
-    /* eslint-disable fp/no-mutation */
+    /* eslint-disable */
     const id = mutableLastId++
     const sinks = wrapper(props, id)
     const rememberedDom$ = holdSubject(1)

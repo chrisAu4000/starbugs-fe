@@ -56,7 +56,7 @@ const Signup = (sources) => {
     validation: validate(['username', 'email', 'password', 'passwordVerification'])
   })
   const form = HTTPForm(sources, formProp$)
-  const messageBox = MessageBox(sources, just([]), form.messages$.map(m => () => m))
+  const messageBox = MessageBox(sources, just([]), form.messages$)
   const isSuccess = (el) => el.type === 'success'
   const route$ = form.messages$
     .filter(m => m.every(isSuccess))
