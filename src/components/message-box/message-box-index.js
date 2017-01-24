@@ -4,9 +4,9 @@ import isolate from '@cycle/isolate'
 import view from './message-box-view'
 import model from './message-box-model'
 import Message from '../message/message-index'
-import MessageConfirm from '../message-confirm/message-confirm-index'
+
 const messages = {
-  success: MessageConfirm,
+  success: Message,
   error: Message
 }
 const itemFactory = (sources) => {

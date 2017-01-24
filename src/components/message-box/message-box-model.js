@@ -1,5 +1,25 @@
-import {mergeArray, merge} from 'most'
-import {map, filter} from 'ramda'
+import {mergeArray, merge, concat, just, combineArray} from 'most'
+import {map, filter, curry} from 'ramda'
+const display = curry(([prev, curr]) => {
+  const prepare = ({
+    messages: [],
+    visible: false,
+    duration: 0
+  })
+  const show = (...messages) => ({
+    messages: messages,
+    visible: true,
+    duration: 250
+  })
+  const hide = (...messages) => ({
+    messages: messages,
+    visible: false,
+    duration: 250
+  })
+  return prev.length === 0
+  ? concat(just(prepare), combineArray(show, curr))
+  : merge(combineArray(hide, prev), combineArray(show, curr).delay(250))
+})
 
 const model = (prop$, createMessage, change$) => {
   /* eslint-disable */
@@ -29,6 +49,8 @@ const model = (prop$, createMessage, change$) => {
     .multicast()
   const state$ = messages$
     .map(messages => messages.map(message => message.DOM))
+    .scan((p, c) => [p[1], c], [[], []])
+    .chain(display)
   const messageAction$ = messages$
     .chain(messages => mergeArray(messages.map(message => message.action$)))
   return {state$, messageAction$}
