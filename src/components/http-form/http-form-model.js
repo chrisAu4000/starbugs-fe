@@ -57,7 +57,11 @@ const model = ({http$}, {createInput, createButton}, prop$) => {
   const response$ = prop$
     .chain(({http}) => http$
       .filter(res$ => res$.request.url === http.url)
-      .chain(res$ => res$.recoverWith(e => just(e.response.body)))
+      .chain(res$ => res$.recoverWith(e => {
+        return e.response
+          ? just(e.response.body)
+          : just({status: 500, i18n: 'Server not reachable'})
+      }))
     )
     .multicast()
   const error$ = response$
